@@ -1,6 +1,6 @@
-"""チーム戦のCSVの更新内容をまとめて Discord のウェブフックへ送る。
+"""チーム戦の対局記録の更新内容をまとめて Discord のウェブフックへ送る。
 
-対象: YYYYMMXX-master.csv / -schedule.csv / -gamesN.csv / -gamesN-summary.csv
+対象: 対局記録(YYYYMMXX-gamesN.csv)だけ。大会マスター・スケジュール・詳細成績のもと(-summary)の更新では通知しない。
 対局数の数え方は、ランキングページと同じ(非表示の対局を除き、前のリーグのファイルにもある対局は数えない)。
 DRY_RUN=1 のときは送らずに内容を表示するだけ。
 """
@@ -115,7 +115,7 @@ def main():
     if not before or before == ZERO or git("cat-file", "-e", before + "^{commit}") is None:
         before = (git("rev-parse", after + "^") or "").strip() or None
     diff = git("diff", "--name-only", before, after) if before else git("ls-tree", "--name-only", after)
-    names = sorted(n for n in (diff or "").splitlines() if MASTER.match(n) or SCHEDULE.match(n) or GAMES.match(n) or SUMMARY.match(n))
+    names = sorted(n for n in (diff or "").splitlines() if GAMES.match(n))
 
     lines = []
     if os.environ.get("EVENT") == "workflow_dispatch":
