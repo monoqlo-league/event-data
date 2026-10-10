@@ -1,0 +1,32 @@
+{
+ "generated": "2026-10-10T16:14:10+00:00",
+ "latest": "2026-10-10T15:54:40Z",
+ "files": {
+  "20260901-games1.csv": {
+   "updated": "2026-10-03T12:55:08Z",
+   "size": 18710,
+   "games": 72
+  },
+  "20260901-games2.csv": {
+   "updated": "2026-10-10T13:39:40Z",
+   "size": 4383,
+   "games": 16
+  },
+  "20260901-master.csv": {
+   "updated": "2026-10-02T15:22:34Z",
+   "size": 7013
+  },
+  "20260901-schedule.csv": {
+   "updated": "2026-10-02T15:22:34Z",
+   "size": 16030
+  },
+  "summary/20260901-games1-summary.csv": {
+   "updated": "2026-10-10T15:51:15Z",
+   "size": 78119
+  },
+  "summary/20260901-games2-summary.csv": {
+   "updated": "2026-10-10T15:54:40Z",
+   "size": 18345
+  }
+ }
+}
