@@ -2,6 +2,7 @@
 # - index.json はランキングページが最初に1回だけ読む一覧(ファイルごとの最終更新日時と対局数)。
 #   これがあれば、ページは GitHub の API(1時間60回の制限)を使わずに済む。
 # - 点検で問題が見つかったら Discord に知らせる(DISCORD_ADMIN_WEBHOOK_URL、無ければ DISCORD_WEBHOOK_URL)。
+# - 対局記録のプレイヤー名を、.github/replace-players.json のとおりに置き換える(例: 20260901-games2.csv の「CPU」→ やまどりぃ)。
 # 「Actions」タブから手動で実行すると、全部のCSVを点検して結果を送る(問題がなくても送る)。
 name: データの一覧と点検
 
@@ -25,6 +26,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: プレイヤー名を置き換える(replace-players.json)
+        run: python3 .github/replace-players.py
       - name: 一覧を作って点検する
         env:
           DATA_KIND: team
@@ -34,13 +37,16 @@ jobs:
           AFTER: ${{ github.sha }}
           EVENT: ${{ github.event_name }}
         run: python3 .github/build-index.py
-      - name: index.json を保存する
+      - name: 置き換えたCSVと index.json を保存する
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.json
-          if git diff --cached --quiet; then echo "index.json は変わらない"; exit 0; fi
-          git commit -q -m "index.json を更新(自動)"
+          git add -u -- "*.csv"
+          if git diff --cached --quiet; then echo "変わったものはない"; exit 0; fi
+          msg="index.json を更新(自動)"
+          if git diff --cached --name-only | grep -q '\.csv$'; then msg="プレイヤー名の置き換えと index.json の更新(自動)"; fi
+          git commit -q -m "$msg"
           for i in 1 2 3; do
             git pull -q --rebase origin main && git push -q origin HEAD:main && exit 0
             sleep 5
