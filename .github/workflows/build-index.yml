@@ -52,3 +52,21 @@ jobs:
             sleep 5
           done
           exit 1
+      - name: 分割CSV(splitdata-download)の作成を頼む
+        # 対局記録がそろった開催日の分を、ダウンロードページに出してもらう。
+        # 知らせるには、splitdata-download に書き込めるトークンを Secrets の SPLIT_DISPATCH_TOKEN に入れておく
+        # (monoqlo-data と同じトークンでよい)。無いときは何もしない(splitdata-download は1日1回、自分でも確かめる)。
+        if: github.event_name == 'push'
+        env:
+          TOKEN: ${{ secrets.SPLIT_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::warning::SPLIT_DISPATCH_TOKEN が無いので知らせない(splitdata-download の1日1回の確認で分割される)"
+            exit 0
+          fi
+          curl -fsS -X POST \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/monoqlo-league/splitdata-download/dispatches \
+            -d '{"event_type":"event-data-updated"}' || echo "::warning::知らせられなかった(1日1回の確認で分割される)"
+          echo "知らせた"
