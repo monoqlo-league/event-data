@@ -51,7 +51,8 @@ jobs:
         # 対局記録がそろった開催日の分を、ダウンロードページに出してもらう。
         # 知らせるには、splitdata-download に書き込めるトークンを Secrets の SPLIT_DISPATCH_TOKEN に入れておく
         # (monoqlo-data と同じトークンでよい)。無いときは何もしない(splitdata-download は1日1回、自分でも確かめる)。
-        if: github.event_name == 'push'
+        # 手動実行のときも頼む。index.json の保存に失敗しても頼む(対局記録はもう置いてあるため)
+        if: ${{ !cancelled() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         env:
           TOKEN: ${{ secrets.SPLIT_DISPATCH_TOKEN }}
         run: |
