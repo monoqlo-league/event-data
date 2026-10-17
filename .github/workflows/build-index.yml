@@ -60,9 +60,10 @@ jobs:
             echo "::warning::SPLIT_DISPATCH_TOKEN が無いので知らせない(splitdata-download の1日1回の確認で分割される)"
             exit 0
           fi
-          curl -fsS -X POST \
+          code=$(curl -sS -o /tmp/res -w '%{http_code}' -X POST \
             -H "Authorization: Bearer $TOKEN" \
             -H "Accept: application/vnd.github+json" \
             https://api.github.com/repos/monoqlo-league/splitdata-download/dispatches \
-            -d '{"event_type":"event-data-updated"}' || echo "::warning::知らせられなかった(1日1回の確認で分割される)"
-          echo "知らせた"
+            -d '{"event_type":"event-data-updated"}') || code=000
+          if [ "$code" = "204" ]; then echo "知らせた"; exit 0; fi
+          echo "::warning::知らせられなかった(HTTP $code: $(head -c 200 /tmp/res | tr '\n' ' '))。1日1回の確認で分割される"
