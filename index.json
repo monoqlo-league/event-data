@@ -1,6 +1,6 @@
 {
- "generated": "2026-10-24T14:01:41+00:00",
- "latest": "2026-10-24T14:01:33Z",
+ "generated": "2026-10-25T08:15:07+00:00",
+ "latest": "2026-10-25T08:14:59Z",
  "files": {
   "20260601-games1.csv": {
    "updated": "2026-10-19T15:14:38Z",
@@ -67,6 +67,10 @@
   "summary/20260901-games2-summary.csv": {
    "updated": "2026-10-19T15:45:36Z",
    "size": 35431
+  },
+  "summary/20260901-games3-summary.csv": {
+   "updated": "2026-10-25T08:14:59Z",
+   "size": 5461
   }
  }
 }
